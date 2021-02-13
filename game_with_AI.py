@@ -30,12 +30,12 @@ SQUARESIZE = 100
 WIDTH = COL_COUNT * SQUARESIZE
 HEIGHT = (ROW_COUNT +1) * SQUARESIZE
 SIZE = (WIDTH, HEIGHT)
-BOARD_COLOR = (23,93,222)
+BOARD_COLOR = (8,78,146)
 SCREEN_COLOR = (8,0,0)
 PLAYER_1_COLOR =  (255,0,0)
 PLAYER_1_COLOR_DARK =  (200,0,0)
-PLAYER_2_COLOR = (255,240,0)
-PLAYER_2_COLOR_DARK = (205,190,0)
+PLAYER_2_COLOR = (0,215,61)
+PLAYER_2_COLOR_DARK = (0,165,47)
 RADIUS = int((SQUARESIZE)/2-7)
 PLAYER = 1
 AI = 2
@@ -49,7 +49,7 @@ PLAYER_2 = 3
 HUMAN_VS_HUMAN = False
 first_game = True
 DEPTH = 2
-
+a = pygame.image.load('icon_4_connect.png')
 ## Funcionalities
 
 def create_board():
@@ -291,6 +291,8 @@ while True :
 	board = create_board()
 	pygame.init()
 	screen = pygame.display.set_mode(SIZE)
+	pygame.display.set_icon(a)
+	pygame.display.set_caption('4 Connect Game')
 	myfont = pygame.font.SysFont('monospace',75)
 	myfont2 = pygame.font.SysFont('monospace',30)
 	text_player = myfont2.render('Human',True,SCREEN_COLOR)
