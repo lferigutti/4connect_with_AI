@@ -49,7 +49,11 @@ PLAYER_2 = 3
 HUMAN_VS_HUMAN = False
 first_game = True
 DEPTH = 2
+choose_difficulty = False
+# Images
 a = pygame.image.load('icon_4_connect.png')
+
+
 ## Funcionalities
 
 def create_board():
@@ -227,7 +231,7 @@ def draw_board(board):
 
 def draw_menu():
 
-	pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
+	pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,HEIGHT))
 	pygame.draw.rect(screen,PLAYER_1_COLOR_DARK,(WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
 	pygame.draw.rect(screen,PLAYER_2_COLOR_DARK,(WIDTH/2 + WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
 	label = myfont2.render('Click on the screen to START',True,PLAYER_1_COLOR)
@@ -279,6 +283,8 @@ def draw_difficulty():
 	screen.blit(hard_text,(WIDTH/2-40,3*SQUARESIZE+SQUARESIZE/3))
 	pygame.draw.rect(screen,PLAYER_2_COLOR_DARK,(WIDTH/2-WIDTH/8,4*SQUARESIZE+SQUARESIZE/3,WIDTH/4,SQUARESIZE/3))
 	screen.blit(insane_text,(WIDTH/2-40,4*SQUARESIZE+SQUARESIZE/3))
+	pygame.draw.rect(screen,PLAYER_1_COLOR_DARK,(SQUARESIZE,HEIGHT-SQUARESIZE,50,50))
+	screen.blit(back_text,(SQUARESIZE,HEIGHT-SQUARESIZE-25))
 	pygame.display.update()		
 
 ##  Game looop
@@ -301,7 +307,7 @@ while True :
 	medium_text = myfont2.render('Medium',True,SCREEN_COLOR)
 	hard_text = myfont2.render('Hard',True,SCREEN_COLOR)
 	insane_text = myfont2.render('Insane',True,SCREEN_COLOR)
-	
+	back_text = myfont.render('←', True, SCREEN_COLOR) 
 
 	# Drawing Menu and choosing dificulty
 	while first_game:
@@ -339,10 +345,11 @@ while True :
 				elif WIDTH/2 + WIDTH/8 <= mouse[0] <= WIDTH/2 + WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
 					turn = random.randint(PLAYER,AI)
 					HUMAN_VS_HUMAN = False
+					choose_difficulty = True
 					
 					# Choose difficulty
 					draw_difficulty()
-					while first_game:
+					while first_game and choose_difficulty:
 						
 						for event in pygame.event.get():
 							if event.type == pygame.QUIT:
@@ -370,6 +377,12 @@ while True :
 								pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2-WIDTH/8,4*SQUARESIZE+SQUARESIZE/3,WIDTH/4,SQUARESIZE/3))
 								screen.blit(insane_text,(WIDTH/2-40,4*SQUARESIZE+SQUARESIZE/3))
 								pygame.display.update()
+							# Back arrow
+							elif SQUARESIZE <= mouse[0] <= SQUARESIZE+50 and HEIGHT-SQUARESIZE <=mouse[1] <= HEIGHT-SQUARESIZE+50:
+								pygame.draw.rect(screen,PLAYER_1_COLOR,(SQUARESIZE,HEIGHT-SQUARESIZE,50,50))
+								screen.blit(back_text,(SQUARESIZE,HEIGHT-SQUARESIZE-25))
+								pygame.display.update()
+
 
 							#Click
 							if event.type == pygame.MOUSEBUTTONDOWN:
@@ -391,7 +404,8 @@ while True :
 								elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 4*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 4*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 									DEPTH = 5
 									first_game = False
-					
+								elif SQUARESIZE <= mouse[0] <= SQUARESIZE+50 and HEIGHT-SQUARESIZE <=mouse[1] <= HEIGHT-SQUARESIZE+50:
+									choose_difficulty= False
 	
 
 	# Preparing the baord
@@ -479,6 +493,7 @@ while True :
 						
 						# Winning move
 						if winning_move(board,AI_PIECE):
+							pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 							label = myfont.render('Player 2 wins!',1,PLAYER_2_COLOR)
 							screen.blit(label,(40,10))
 							draw_board(board)
@@ -513,6 +528,7 @@ while True :
 			
 			# Winning move?
 			if winning_move(board,AI_PIECE):
+				pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 				label = myfont.render('AI wins!',1,PLAYER_2_COLOR)
 				screen.blit(label,(WIDTH/4,10))
 				draw_board(board)
@@ -550,11 +566,13 @@ while True :
 			# Drawing the options to choose between playing with HUMAN or AI (In this case, the AI level would be the same as the beginning)
 			pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 			pygame.draw.rect(screen,PLAYER_1_COLOR_DARK,(WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
-			pygame.draw.rect(screen,PLAYER_2_COLOR_DARK,(WIDTH/2 + WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
+			pygame.draw.rect(screen,PLAYER_2_COLOR_DARK,(WIDTH/2 + WIDTH/16,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
+			pygame.draw.rect(screen,PLAYER_1_COLOR_DARK,(WIDTH-75,SQUARESIZE/2,SQUARESIZE/2,SQUARESIZE/3))
 			label = myfont2.render('Click on the screen to play again',True,PLAYER_1_COLOR)
 			screen.blit(text_player,(WIDTH/5.5,SQUARESIZE-SQUARESIZE/2))
-			screen.blit(text_AI,(WIDTH/2 + WIDTH/4.5,SQUARESIZE-SQUARESIZE/2))
+			screen.blit(text_AI,(WIDTH/2 + WIDTH/6,SQUARESIZE-SQUARESIZE/2))
 			screen.blit(label,(40,10))
+			screen.blit(back_text,(WIDTH-75,SQUARESIZE/2-35))
 
 			pygame.display.update()
 
@@ -567,10 +585,16 @@ while True :
 				pygame.draw.rect(screen,PLAYER_1_COLOR,(WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
 				screen.blit(text_player,(WIDTH/5.5,SQUARESIZE-SQUARESIZE/2))
 				pygame.display.update()
-			elif WIDTH/2 + WIDTH/8 <= mouse[0] <= WIDTH/2 + WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
-				pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2 + WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
-				screen.blit(text_AI,(WIDTH/2 + WIDTH/4.5,SQUARESIZE-SQUARESIZE/2))
+			
+			elif WIDTH/2 + WIDTH/16 <= mouse[0] <= WIDTH/2 + WIDTH/16 + WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
+				pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2 + WIDTH/16,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
+				screen.blit(text_AI,(WIDTH/2 + WIDTH/6,SQUARESIZE-SQUARESIZE/2))
 				pygame.display.update()
+
+			elif WIDTH-75 <= mouse[0] <= WIDTH-75 + SQUARESIZE/2 and SQUARESIZE/2 <= mouse[1] <=SQUARESIZE/2 + SQUARESIZE/3:
+				pygame.draw.rect(screen,PLAYER_1_COLOR,(WIDTH-75,SQUARESIZE/2,SQUARESIZE/2,SQUARESIZE/3))
+				screen.blit(back_text,(WIDTH-75,SQUARESIZE/2-35))
+				pygame.display.update()	
 			
 
 			# Choose with a click between HUMAN or AI
@@ -584,10 +608,18 @@ while True :
 					game_over = False
 				
 				# Click on AI
-				elif WIDTH/2 + WIDTH/8 <= mouse[0] <= WIDTH/2 + WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
+				elif WIDTH/2 + WIDTH/16 <= mouse[0] <= WIDTH/2 + WIDTH/16 + WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
 					turn = random.randint(PLAYER,AI)
 					HUMAN_VS_HUMAN = False
 					game_over = False
+				
+				# Click on back
+				elif WIDTH-75 <= mouse[0] <= WIDTH-75 + SQUARESIZE/2 and SQUARESIZE/2 <= mouse[1] <=SQUARESIZE/2 + SQUARESIZE/3:
+					game_over = False
+					first_game = True
+
+
+
 
 				# Game over = false --> restart the game loop
 
