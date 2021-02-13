@@ -322,19 +322,23 @@ while True :
 			
 
 
+			# Click itself
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				click_mouse = event.pos
 				
+				# HUMAN VS HUMAN
 				if WIDTH/8 <= click_mouse[0] <= WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= click_mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
 					HUMAN_VS_HUMAN = True
 					turn = 1
 					first_game = False
+				
+				# PLAYING WITH AI	
 				elif WIDTH/2 + WIDTH/8 <= mouse[0] <= WIDTH/2 + WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
 					turn = random.randint(PLAYER,AI)
 					HUMAN_VS_HUMAN = False
 					
-					
+					# Choose difficulty
 					draw_difficulty()
 					while first_game:
 						
@@ -343,39 +347,45 @@ while True :
 								sys.exit()
 							draw_difficulty()
 							mouse = pygame.mouse.get_pos()
+
+							#Easy mode
 							if WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 								pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2-WIDTH/8,SQUARESIZE+SQUARESIZE/3,WIDTH/4,SQUARESIZE/3))
 								screen.blit(easy_text,(WIDTH/2-40,SQUARESIZE+SQUARESIZE/3))
 								pygame.display.update()
-
+							# Medium
 							elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 2*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 2*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 								pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2-WIDTH/8,2*SQUARESIZE+SQUARESIZE/3,WIDTH/4,SQUARESIZE/3))
 								screen.blit(medium_text,(WIDTH/2-40,2*SQUARESIZE+SQUARESIZE/3))
 								pygame.display.update()
-							
+							# Hard
 							elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 3*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 3*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 								pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2-WIDTH/8,3*SQUARESIZE+SQUARESIZE/3,WIDTH/4,SQUARESIZE/3))
 								screen.blit(hard_text,(WIDTH/2-40,3*SQUARESIZE+SQUARESIZE/3))
 								pygame.display.update()
-							
+							# Insane
 							elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 4*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 4*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 								pygame.draw.rect(screen,PLAYER_2_COLOR,(WIDTH/2-WIDTH/8,4*SQUARESIZE+SQUARESIZE/3,WIDTH/4,SQUARESIZE/3))
 								screen.blit(insane_text,(WIDTH/2-40,4*SQUARESIZE+SQUARESIZE/3))
 								pygame.display.update()
 
-
+							#Click
 							if event.type == pygame.MOUSEBUTTONDOWN:
 								click_mouse = event.pos
 
+								# Easy
 								if WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 									DEPTH = 2
 									first_game = False
+								# Medium
 								elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 2*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 2*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 									DEPTH = 3
 									first_game = False								
+								# Hard
 								elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 3*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 3*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 									DEPTH = 4
 									first_game = False							
+								# Insane
 								elif WIDTH/2-WIDTH/8 <= mouse[0] <= WIDTH/2-WIDTH/8+WIDTH/4 and 4*SQUARESIZE+SQUARESIZE/3 <= mouse[1] <= 4*SQUARESIZE+SQUARESIZE/3+SQUARESIZE/3:
 									DEPTH = 5
 									first_game = False
@@ -393,9 +403,12 @@ while True :
 	while not game_over:
 
 		for event in pygame.event.get():
+			
+			# Exit available
 			if event.type == pygame.QUIT:
 				sys.exit()
 
+			# Draw the circle with the proper color on top of the board
 			if event.type == pygame.MOUSEMOTION:
 				pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 				posx = event.pos[0]
@@ -406,14 +419,16 @@ while True :
 
 			pygame.display.update()
 
+			# Click and drawing of player (1 or 2) move
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				
-				
+				#Getting the position of the mouse to drop the piece in the correct column
 				posx = event.pos[0]
 				col = int(math.floor(posx/SQUARESIZE))
+				
+
+				# Is the move possible?
 				if board[ROW_COUNT-1][col] == 0:
-
-
 
 					# Player 1 move
 					if turn == PLAYER:
@@ -431,6 +446,7 @@ while True :
 							pygame.time.delay(2000)
 							game_over = True
 						
+						# Is it a draw?
 						elif len(get_valid_location(board))==0:
 							pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 							label = myfont.render('It\' a Draw',1,PLAYER_1_COLOR)
@@ -438,36 +454,36 @@ while True :
 							pygame.time.delay(2000)
 							game_over=True
 
-
-						else:	
-
+						# else keep playing
+						else: 	
 							pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 							draw_board(board)
 							pygame.display.update()
 							
+							# Next turn  - depending if we are playing with another human or with the AI
 							if HUMAN_VS_HUMAN:
-								
 								pygame.draw.circle(screen,PLAYER_2_COLOR,(posx,int(SQUARESIZE/2)),RADIUS)
 								pygame.display.update()
 								turn = PLAYER_2
 							else:
 							 	turn = AI	
 
+					# Player 2 turn
 					elif turn == PLAYER_2:
-
-
 
 						# Movement itself
 						row = next_row_available(board,col)
 						board = drop_piece(board,row,col,AI_PIECE)
 						
+						# Winning move
 						if winning_move(board,AI_PIECE):
 							label = myfont.render('Player 2 wins!',1,PLAYER_2_COLOR)
 							screen.blit(label,(40,10))
 							draw_board(board)
 							pygame.time.delay(2000)
 							game_over = True
-						
+					
+						#Is it a draw?
 						elif len(get_valid_location(board))==0:
 							pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 							label = myfont.render('It\' a Draw',1,PLAYER_1_COLOR)
@@ -475,6 +491,7 @@ while True :
 							pygame.time.delay(2000)
 							game_over=True
 
+						# Else keep playing (player 1 turn)
 						else: 
 							pygame.draw.circle(screen,PLAYER_1_COLOR,(posx,int(SQUARESIZE/2)),RADIUS)
 							pygame.display.update()
@@ -485,17 +502,14 @@ while True :
 		if turn == AI:
 		
 			#AI Thinking
-				
-
 			col, minmax_score = minimax_algorithm(board,DEPTH,-math.inf,math.inf,True)
 
-
-			# Movement
+			# Movement itself
 			row = next_row_available(board,col)
 			board = drop_piece(board,row,col,AI_PIECE)
-			pygame.time.wait(500)
+			pygame.time.wait(500)  # it's a delay to make it more real
 			
-			
+			# Winning move?
 			if winning_move(board,AI_PIECE):
 				label = myfont.render('AI wins!',1,PLAYER_2_COLOR)
 				screen.blit(label,(WIDTH/4,10))
@@ -503,6 +517,7 @@ while True :
 				pygame.time.delay(2000)
 				game_over = True
 
+			# Is it a Draw?
 			elif len(get_valid_location(board))==0:
 				pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 				label = myfont.render('It\' a Draw',1,PLAYER_1_COLOR)
@@ -510,32 +525,27 @@ while True :
 				pygame.time.delay(2000)
 				game_over=True
 			
+			# else keep playing (player 1 turn)
 			else: 
 				pygame.draw.circle(screen,PLAYER_1_COLOR,(posx,int(SQUARESIZE/2)),RADIUS)
 				pygame.display.update()
 				turn = 1
 		
-			
-		
-
-
-
-
-
-
-		
-
 		draw_board(board)
 
 
-	# Play again or exit (Not able to change AI level - Only in the Menu)
+	# Play again or exit (Not able to change AI level - Only from the start Menu)
+	
 	while game_over:
+
+		# Ready to recieve inputs with the mouse
 		for event in pygame.event.get():
+			
+			# Exit available
 			if event.type == pygame.QUIT:
 				sys.exit()
 
-
-			
+			# Drawing the options to choose between playing with HUMAN or AI (In this case, the AI level would be the same as the beginning)
 			pygame.draw.rect(screen,SCREEN_COLOR,(0,0,WIDTH,SQUARESIZE))
 			pygame.draw.rect(screen,PLAYER_1_COLOR_DARK,(WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
 			pygame.draw.rect(screen,PLAYER_2_COLOR_DARK,(WIDTH/2 + WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
@@ -546,10 +556,10 @@ while True :
 
 			pygame.display.update()
 
+			# Get mouse position.
 			mouse = pygame.mouse.get_pos() 
 			      
-			 # if mouse is hovered on a button it 
-			 # changes to lighter shade  
+ 			# Change the colour of the rectagle when the mouse is on it
 			if WIDTH/8 <= mouse[0] <= WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3: 
 				
 				pygame.draw.rect(screen,PLAYER_1_COLOR,(WIDTH/8,SQUARESIZE-SQUARESIZE/2,WIDTH/4,SQUARESIZE/3))
@@ -561,18 +571,22 @@ while True :
 				pygame.display.update()
 			
 
-
-
+			# Choose with a click between HUMAN or AI
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				click_mouse = event.pos
 				
+				# Click on HUMAN
 				if WIDTH/8 <= click_mouse[0] <= WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= click_mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
 					HUMAN_VS_HUMAN = True
 					turn = 1
 					game_over = False
+				
+				# Click on AI
 				elif WIDTH/2 + WIDTH/8 <= mouse[0] <= WIDTH/2 + WIDTH/8+WIDTH/4 and SQUARESIZE-SQUARESIZE/2 <= mouse[1] <= SQUARESIZE-SQUARESIZE/2+SQUARESIZE/3:
 					turn = random.randint(PLAYER,AI)
 					HUMAN_VS_HUMAN = False
 					game_over = False
+
+				# Game over = false --> restart the game loop
 
 	
